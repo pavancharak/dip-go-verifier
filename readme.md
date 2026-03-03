@@ -88,13 +88,3 @@ This snippet:
 
 
 
-You can append this to the top of your existing `README.md` and then commit \& push.  
-
-
-
-Do you want me to provide the \*\*exact git commands to update the README with this snippet\*\*?
-
-```
-
-
-
