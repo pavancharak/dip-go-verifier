@@ -1,7 +1,6 @@
 package verifier
 
 import (
-	"encoding/hex"
 	"encoding/json"
 	"io/ioutil"
 	"os"
@@ -10,7 +9,6 @@ import (
 
 	"github.com/pavancharak/dip-go-verifier/internal/artifact"
 	"github.com/pavancharak/dip-go-verifier/internal/canonicalization"
-	"github.com/pavancharak/dip-go-verifier/internal/hashing"
 	"github.com/pavancharak/dip-go-verifier/internal/signature"
 )
 
@@ -59,7 +57,7 @@ func TestConformanceVectors(t *testing.T) {
 
 		isValidVector := filepath.Base(path) == "valid_decision.json"
 
-		// Parsing failure is expected for invalid vectors
+		// Parsing failure expected for invalid vectors
 		if err != nil {
 			if isValidVector {
 				t.Fatalf("Valid vector failed parsing: %s", path)
@@ -68,12 +66,6 @@ func TestConformanceVectors(t *testing.T) {
 		}
 
 		canonical := canonicalization.Canonicalize(data)
-		hashHex := hashing.ComputeSHA256(canonical)
-
-		hashBytes, err := hex.DecodeString(hashHex)
-		if err != nil {
-			t.Fatal(err)
-		}
 
 		pubKeyHex, ok := pubKeys[da.ArtifactID]
 		if !ok {
@@ -83,9 +75,9 @@ func TestConformanceVectors(t *testing.T) {
 			return nil
 		}
 
-		valid, err := signature.VerifySignature(pubKeyHex, da.Signature, hashBytes)
+		valid, err := signature.VerifySignature(pubKeyHex, da.Signature, canonical)
 
-		// Verification error is expected for invalid vectors
+		// Verification error expected for invalid vectors
 		if err != nil {
 			if isValidVector {
 				t.Fatalf("Valid vector failed verification: %s", path)
