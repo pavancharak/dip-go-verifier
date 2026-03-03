@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -13,13 +14,18 @@ import (
 )
 
 func main() {
+
+	// ----------------------------------------------------
 	// Step 1: Read artifact JSON
+	// ----------------------------------------------------
 	data, err := ioutil.ReadFile("testdata/vectors/valid_decision.json")
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// ----------------------------------------------------
 	// Step 2: Parse artifact
+	// ----------------------------------------------------
 	da, err := artifact.ParseDecisionArtifact(data)
 	if err != nil {
 		log.Fatal(err)
@@ -29,12 +35,30 @@ func main() {
 	fmt.Println("Artifact Type:", da.ArtifactType)
 	fmt.Println("Signature:", da.Signature)
 
-	// Step 3: Canonicalize and compute hash
+	// ----------------------------------------------------
+	// Step 3: Canonicalize (exclude signature field)
+	// ----------------------------------------------------
 	canonical := canonicalization.Canonicalize(data)
-	hash := hashing.ComputeSHA256(canonical)
-	fmt.Println("Canonical SHA-256 Hash:", hash)
 
-	// Step 4: Load public keys
+	fmt.Println("\nCanonical JSON:")
+	fmt.Println(string(canonical))
+
+	// ----------------------------------------------------
+	// Step 4: Compute SHA-256 of canonical JSON
+	// ----------------------------------------------------
+	hashHex := hashing.ComputeSHA256(canonical)
+
+	fmt.Println("\nCanonical SHA-256 Hash:", hashHex)
+
+	// Decode hex hash to raw bytes
+	hashBytes, err := hex.DecodeString(hashHex)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// ----------------------------------------------------
+	// Step 5: Load public keys
+	// ----------------------------------------------------
 	pubKeysBytes, err := ioutil.ReadFile("testdata/vectors/public_keys.json")
 	if err != nil {
 		log.Fatal(err)
@@ -51,15 +75,17 @@ func main() {
 		log.Fatalf("public key not found for artifact %s", da.ArtifactID)
 	}
 
-	// Step 5: Verify signature
-	valid, err := signature.VerifySignature(pubKeyHex, da.Signature, canonical)
+	// ----------------------------------------------------
+	// Step 6: Verify signature over SHA-256 hash
+	// ----------------------------------------------------
+	valid, err := signature.VerifySignature(pubKeyHex, da.Signature, hashBytes)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if valid {
-		fmt.Println("[PASS] Signature verified")
+		fmt.Println("\n[PASS] Signature verified")
 	} else {
-		fmt.Println("[FAIL] Signature verification failed")
+		fmt.Println("\n[FAIL] Signature verification failed")
 	}
 }

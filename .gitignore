@@ -1,0 +1,8 @@
+# Binaries
+*.exe
+dip-verify
+dip-sign
+
+# OS
+.DS_Store
+Thumbs.db
