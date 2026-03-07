@@ -1,7 +1,8 @@
-# build artifacts
+# Binaries
 *.exe
-bin/
-dist/
+dip-verify
+dip-sign
 
-# Go build cache
-*.test
+# OS
+.DS_Store
+Thumbs.db
