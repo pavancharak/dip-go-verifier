@@ -1,3 +1,3 @@
-module github.com/pavancharak/dip-go-verifier
+module github.com/dip-protocol/dip-go-verifier
 
-go 1.25.0
+go 1.22

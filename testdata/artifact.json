@@ -1,0 +1,17 @@
+{
+  "artifact_version": "1.0",
+  "artifact_id": "31d046acb6800620bad1524d70f0a5017d0d3952d7df5892c7cef964637af754",
+  "decision": {
+    "decision_type": "deployment_approval",
+    "result": "approved",
+    "service": "payment-api",
+    "system": "ci-pipeline",
+    "timestamp": "2026-03-07T18:00:00Z",
+    "version": "1.4.2"
+  },
+  "signature": {
+    "algorithm": "ed25519",
+    "public_key": "HHnevnRvSDVfN+ZLKzy/65p5PW2R/YEdalosmd14iY4=",
+    "value": "9RMN6Lt0a/T4uD57LKsbPGzuMw1nPRXnmBYtL1kOEvrruf5ukiTtCVQtypWcBUvC4x9xyqBkXhy/TUDbkdJEBw=="
+  }
+}
